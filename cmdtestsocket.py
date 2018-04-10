@@ -3,12 +3,32 @@ import json
 import urllib2
 from socket import * 
 import sys
+import uuid
 score=0
 if len(sys.argv)!=3:
     print "student number or student name  error!"
     sys.exit()
+def get_mac_address(): 
+    mac=uuid.UUID(int = uuid.getnode()).hex[-12:] 
+    return ":".join([mac[e:e+2] for e in range(0,11,2)])
+def get_host_ip():
+    try:
+        s = socket(AF_INET, SOCK_DGRAM)
+        s.connect(('8.8.8.8', 80))
+        ip = s.getsockname()[0]
+    finally:
+        s.close()
+    return ip
+#get host name
+myname = gethostname( )
+#get host ip
+#myaddr = gethostbyname(myname)
+myaddr=get_host_ip()
 homepath=os.environ['HOME']
 jsondata={}
+jsondata["hostname"]=myname
+jsondata["addr"]=myaddr
+jsondata["mac"]=get_mac_address()
 jsondata["stuno"]=sys.argv[1]
 jsondata["stuname"]=sys.argv[2]
 #os.path.expanduser('$HOME')
